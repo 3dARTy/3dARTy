@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3dARTy</title>
+<style>
+body { font-family: sans-serif; margin: 0; background: #111; color: #fff; }
+header { background: #c70000; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+h1 { margin: 0; }
+.container { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 1rem; padding: 1rem; }
+.card { background: #222; border-radius: 1rem; overflow: hidden; box-shadow: 0 2px 6px rgba(255,0,0,0.5); text-align:center; }
+.card img { width: 100%; height: 200px; object-fit: cover; }
+.card-body { padding: 0.5rem 1rem; }
+button { background: #c70000; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; margin-top: 0.5rem;}
+button:hover { opacity: 0.9; }
+#admin { background: #222; padding: 1rem; margin: 1rem; border-radius: 1rem; box-shadow: 0 2px 6px rgba(255,0,0,0.5); }
+#admin input { margin: 0.3rem 0; padding: 0.5rem; width: 100%; border-radius: 0.3rem; border: none; }
+#admin h3 { margin-top: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>3dARTy</h1>
+</header>
+<div id="admin">
+  <h3>Panel de Administración</h3>
+  <input type="text" id="newName" placeholder="Nombre del producto">
+  <input type="number" id="newPrice" placeholder="Precio">
+  <input type="text" id="newImage" placeholder="URL de la imagen">
+  <button onclick="addProduct()">Añadir Producto</button>
+</div>
+<div class="container" id="products"></div>
+<script>
+let PRODUCTS = [
+  { id: 1, name: "Llaveros 3D", price: 8.99, image: "https://via.placeholder.com/400x300.png?text=Llaveros+3D" },
+  { id: 2, name: "Figuras 3D", price: 25.5, image: "https://via.placeholder.com/400x300.png?text=Figuras+3D" },
+  { id: 3, name: "Decoración 3D", price: 15.0, image: "https://via.placeholder.com/400x300.png?text=Decoracion+3D" },
+];
+function renderProducts() {
+  const container = document.getElementById("products");
+  container.innerHTML = "";
+  PRODUCTS.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <div class="card-body">
+        <h4>${p.name}</h4>
+        <p>€${p.price.toFixed(2)}</p>
+        <button onclick="downloadProduct('${p.image}', '${p.name}')">Descargar Imagen</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+function downloadProduct(url, name) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name.replace(/\s+/g, '_') + ".png";
+  a.click();
+}
+function addProduct() {
+  const name = document.getElementById("newName").value.trim();
+  const price = parseFloat(document.getElementById("newPrice").value);
+  const image = document.getElementById("newImage").value.trim();
+  if (!name || !price || !image) { alert("Por favor completa todos los campos"); return; }
+  const newId = PRODUCTS.length ? PRODUCTS[PRODUCTS.length - 1].id + 1 : 1;
+  PRODUCTS.push({ id: newId, name, price, image });
+  document.getElementById("newName").value = "";
+  document.getElementById("newPrice").value = "";
+  document.getElementById("newImage").value = "";
+  renderProducts();
+}
+renderProducts();
+</script>
+</body>
+</html>
